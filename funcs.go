@@ -39,3 +39,35 @@ var add = builtinCallable{
 	},
 	name: "add",
 }
+
+var multiply = builtinCallable{
+	f: func(l List) Object {
+		var ret big.Int
+		ret.Set(l.First().(Int).Value)
+		l = l.Rest()
+		for !l.Empty() {
+			ret.Mul(&ret, l.First().(Int).Value)
+			l = l.Rest()
+		}
+		return Int{
+			Value: &ret,
+		}
+	},
+	name: "multiply",
+}
+
+var subtract = builtinCallable{
+	f: func(l List) Object {
+		var ret big.Int
+		ret.Set(l.First().(Int).Value)
+		l = l.Rest()
+		for !l.Empty() {
+			ret.Sub(&ret, l.First().(Int).Value)
+			l = l.Rest()
+		}
+		return Int{
+			Value: &ret,
+		}
+	},
+	name: "subtract",
+}
