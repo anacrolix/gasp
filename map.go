@@ -11,6 +11,9 @@ func NewMap() Map {
 }
 
 func (m Map) Get(key Object) (ret Object) {
+	if m.key == nil {
+		return
+	}
 	if m.key.String() == key.String() {
 		return m.value
 	}
