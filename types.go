@@ -2,7 +2,6 @@ package gasp
 
 import (
 	"fmt"
-	"log"
 	"math/big"
 	"strings"
 )
@@ -68,9 +67,10 @@ func (l List) Eval(env Env) Object {
 		el = el.Cons(Eval(l.First(), env))
 		l = l.Rest()
 	}
-	log.Print(el)
 	el = reverse(el)
-	log.Print(el)
+	if el.Empty() {
+		return EmptyList
+	}
 	return el.First().(Caller).Call(el.Rest())
 }
 
