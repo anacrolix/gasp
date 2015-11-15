@@ -86,11 +86,17 @@ func (r *Reader) readList() (l *List, err error) {
 	return
 }
 
-func ReadString(s string) Object {
+func ReadString(s string) (ret []Object) {
 	r := NewReader(bytes.NewReader([]byte(s)))
-	obj, err := r.Read()
-	if err != nil {
-		panic(err)
+	for {
+		obj, err := r.Read()
+		if err == io.EOF {
+			break
+		}
+		if err != nil {
+			panic(err)
+		}
+		ret = append(ret, obj)
 	}
-	return obj
+	return
 }
