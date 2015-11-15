@@ -11,7 +11,10 @@ func Eval(obj Object, env Env) Object {
 	return obj
 }
 
-func EvalString(env Env, s string) Object {
-	obj := ReadString(s)
-	return Eval(obj, env)
+func EvalString(env Env, s string) (ret Object) {
+	objs := ReadString(s)
+	for _, o := range objs {
+		ret = Eval(o, env)
+	}
+	return
 }
