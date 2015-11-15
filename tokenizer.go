@@ -102,13 +102,16 @@ var tokens = []struct {
 
 func (me *Tokenizer) match() (tt TokenType, ms [][]byte, ok bool) {
 	for _, t := range tokens {
-		ms = t.Regexp.FindSubmatch(me.buf)
-		if ms == nil {
+		ms1 := t.Regexp.FindSubmatch(me.buf)
+		if ms1 == nil {
 			continue
 		}
+		if ok {
+			panic(fmt.Sprintf("ambiguous token: %s %q and %s %q", tt, ms[0], t.Type, ms1[0]))
+		}
+		ms = ms1
 		tt = t.Type
 		ok = true
-		return
 	}
 	return
 }
