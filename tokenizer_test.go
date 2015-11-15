@@ -54,7 +54,7 @@ var cases = []struct {
 	},
 }
 
-func readAllTokens(tr *Tokenizer) (ts []Token, err error) {
+func readAllTokens(tr TokenReader) (ts []Token, err error) {
 	for {
 		var t Token
 		t, err = tr.Read()
