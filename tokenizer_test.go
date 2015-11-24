@@ -52,6 +52,46 @@ var cases = []struct {
 		},
 		io.EOF,
 	},
+	{
+		`(Sprintf "%s, %s" "hello" "world")`,
+		[]Token{
+			Token{
+				Type:    LParen,
+				Line:    1,
+				LineOff: 0,
+			},
+			Token{
+				Type:    TokenTypeSymbol,
+				Line:    1,
+				LineOff: 1,
+				Value:   "Sprintf",
+			},
+			Token{
+				Type:    Str,
+				Line:    1,
+				LineOff: 9,
+				Value:   "%s, %s",
+			},
+			Token{
+				Type:    Str,
+				Line:    1,
+				LineOff: 18,
+				Value:   "hello",
+			},
+			Token{
+				Type:    Str,
+				Line:    1,
+				LineOff: 26,
+				Value:   "world",
+			},
+			Token{
+				Type:    RParen,
+				Line:    1,
+				LineOff: 33,
+			},
+		},
+		io.EOF,
+	},
 }
 
 func readAllTokens(tr TokenReader) (ts []Token, err error) {
