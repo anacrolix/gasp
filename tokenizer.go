@@ -76,7 +76,7 @@ var tokens = []struct {
 }{
 	{
 		Type:   Str,
-		Regexp: regexp.MustCompile(`^"(.*)"`),
+		Regexp: regexp.MustCompile(`^"(.*?)"`),
 	},
 	{
 		Type:   LParen,

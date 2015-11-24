@@ -39,6 +39,11 @@ cases:
 			[]string{`(* (+ 1 2) (- 4 2))`},
 			io.EOF,
 		},
+		{
+			`(Sprintf "%s, %s" "hello" "world")`,
+			[]string{`(Sprintf "%s, %s" "hello" "world")`},
+			io.EOF,
+		},
 	} {
 		r := NewReader(bytes.NewReader([]byte(_case.Input)))
 		var err error
