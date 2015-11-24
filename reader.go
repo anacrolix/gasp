@@ -25,6 +25,34 @@ func (r *Reader) Read() (obj Object, err error) {
 	return r.readObject()
 }
 
+func unescapeStr(s string) (ret string, err error) {
+	escaped := false
+	for _, c := range s {
+		if escaped {
+			switch c {
+			case '"', '\\':
+			case 'n':
+				c = '\n'
+			default:
+				err = fmt.Errorf("invalid escape: \\%c", c)
+				return
+			}
+			ret += string(c)
+			escaped = false
+			continue
+		}
+		if c == '\\' {
+			escaped = true
+			continue
+		}
+		ret += string(c)
+	}
+	if escaped {
+		err = fmt.Errorf("unexpected end of string: %q", ret)
+	}
+	return
+}
+
 func (r *Reader) readObject() (obj Object, err error) {
 	if r.err != nil {
 		err = r.err
@@ -35,10 +63,14 @@ func (r *Reader) readObject() (obj Object, err error) {
 		r.advance()
 		obj, err = r.readList()
 	case Str:
-		obj = String{
+		s := String{
 			Token: r.t,
-			Value: r.t.Value,
 		}
+		s.Value, err = unescapeStr(r.t.Value)
+		if err != nil {
+			return
+		}
+		obj = s
 		r.advance()
 	case TokenTypeSymbol:
 		obj = Symbol{
@@ -64,7 +96,7 @@ func (r *Reader) advance() {
 	r.t, r.err = r.tr.Read()
 }
 
-func (r *Reader) readList() (l *List, err error) {
+func (r *Reader) readList() (ret List, err error) {
 	var objs []Object
 	for r.t.Type != RParen {
 		var obj Object
@@ -76,13 +108,14 @@ func (r *Reader) readList() (l *List, err error) {
 		objs = append(objs, obj)
 	}
 	r.advance()
-	l = &EmptyList
+	l := &EmptyList
 	for i := len(objs) - 1; i >= 0; i-- {
 		l = &List{
 			Value: objs[i],
 			Next:  l,
 		}
 	}
+	ret = *l
 	return
 }
 

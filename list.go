@@ -44,16 +44,26 @@ func (l List) Rest() List {
 }
 
 func (l List) Eval(env Env) Object {
+	if l.Empty() {
+		return EmptyList
+	}
+	if s, ok := l.First().(Symbol); ok {
+		switch s.Name() {
+		case "import":
+			return nil
+		}
+	}
 	el := EmptyList
 	for !l.Empty() {
 		el = el.Cons(Eval(l.First(), env))
 		l = l.Rest()
 	}
 	el = reverse(el)
-	if el.Empty() {
-		return EmptyList
+	first, ok := el.First().(Caller)
+	if !ok {
+		panic(fmt.Sprint("not caller: %s in %s", first))
 	}
-	return el.First().(Caller).Call(el.Rest())
+	return first.Call(el.Rest())
 }
 
 func (l List) AsSlice() (ret []Object) {

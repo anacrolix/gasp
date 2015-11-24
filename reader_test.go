@@ -44,6 +44,11 @@ cases:
 			[]string{`(Sprintf "%s, %s" "hello" "world")`},
 			io.EOF,
 		},
+		{
+			`"\"" "" "\"hello\" said world"`,
+			[]string{`"\""`, `""`, `"\"hello\" said world"`},
+			io.EOF,
+		},
 	} {
 		r := NewReader(bytes.NewReader([]byte(_case.Input)))
 		var err error
@@ -60,4 +65,12 @@ cases:
 		assert.Nil(t, obj)
 		assert.EqualValues(t, _case.Err, err)
 	}
+}
+
+func TestReadStringWithEscapes(t *testing.T) {
+	objs := ReadString(`"\""`)
+	assert.EqualValues(t, []Object{String{
+		Token: Token{Type: Str, Value: `\"`, Line: 1},
+		Value: `"`,
+	}}, objs)
 }

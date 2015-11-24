@@ -2,7 +2,7 @@ package gasp
 
 import (
 	"fmt"
-	"log"
+	"math/big"
 	"reflect"
 )
 
@@ -27,9 +27,14 @@ func ToGo(obj Object, typ reflect.Type) interface{} {
 }
 
 func FromGo(i interface{}) Object {
+	if i == nil {
+		return nil
+	}
 	switch v := i.(type) {
 	case string:
 		return NewString(v)
+	case int:
+		return Int{Value: big.NewInt(int64(v))}
 	}
 	panic(i)
 }
@@ -52,15 +57,13 @@ func (me GoObject) Call(args List) Object {
 		args = args.Rest()
 		i++
 	}
-	log.Println(len(in), in)
 	out := me.v.Call(in)
-	log.Println(len(out), out)
 	if len(out) == 1 {
 		return FromGo(out[0].Interface())
 	}
 	ret := EmptyList
 	for _, o := range out {
-		ret = ret.Cons(FromGo(o))
+		ret = ret.Cons(FromGo(o.Interface()))
 	}
 	return ret
 }

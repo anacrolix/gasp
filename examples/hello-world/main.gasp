@@ -1,0 +1,2 @@
+(import "fmt")
+(go:fmt.Printf "%s, %s\n" "hello" "world")

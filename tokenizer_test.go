@@ -42,6 +42,17 @@ var cases = []struct {
 		io.EOF,
 	},
 	{
+		`"\""`,
+		[]Token{
+			Token{
+				Type:  Str,
+				Line:  1,
+				Value: "\\\"",
+			},
+		},
+		io.EOF,
+	},
+	{
 		`"hello, world"`,
 		[]Token{
 			Token{

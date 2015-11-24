@@ -33,8 +33,12 @@ func (me *Tokenizer) Read() (t Token, err error) {
 		}
 		if ok && (len(ms[0]) < len(me.buf) || err == io.EOF) {
 			t.Type = tt
-			if len(ms) >= 2 {
+			switch len(ms) {
+			case 1:
+			case 2:
 				t.Value = string(ms[1])
+			default:
+				panic(fmt.Sprintf("%d groups captured: %+q", len(ms), ms))
 			}
 			t.Line = me.line
 			t.LineOff = me.lineOff
@@ -76,7 +80,7 @@ var tokens = []struct {
 }{
 	{
 		Type:   Str,
-		Regexp: regexp.MustCompile(`^"(.*?)"`),
+		Regexp: regexp.MustCompile(`^"((?:|(?:[^"]|\\")*[^\\]))"`),
 	},
 	{
 		Type:   LParen,
@@ -92,7 +96,7 @@ var tokens = []struct {
 	},
 	{
 		Type:   TokenTypeSymbol,
-		Regexp: regexp.MustCompile(`^([a-zA-Z*+-/.]+)`),
+		Regexp: regexp.MustCompile(`^([a-zA-Z*+-/.:]+)`),
 	},
 	{
 		Type:   TokenTypeInt,
