@@ -11,7 +11,7 @@ type GoObject struct {
 }
 
 func (me GoObject) String() string {
-	return fmt.Sprint(me)
+	return fmt.Sprint(me.v.Interface())
 }
 
 type Goer interface {

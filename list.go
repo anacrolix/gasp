@@ -2,6 +2,7 @@ package gasp
 
 import (
 	"fmt"
+	"log"
 	"strings"
 )
 
@@ -10,6 +11,23 @@ var EmptyList = List{}
 type List struct {
 	Next  *List
 	Value Object
+}
+
+var (
+	_ Evaler = List{}
+	_ Truer  = List{}
+)
+
+func (l List) True() bool {
+	return !l.Empty()
+}
+
+func (l List) Len() (ret int) {
+	for !l.Empty() {
+		ret++
+		l = l.Rest()
+	}
+	return
 }
 
 func (l List) String() string {
@@ -25,7 +43,7 @@ func (l List) String() string {
 }
 
 func (l List) Empty() bool {
-	return l.Value == nil
+	return l == EmptyList
 }
 
 func (l List) Cons(obj Object) List {
@@ -43,14 +61,30 @@ func (l List) Rest() List {
 	return *l.Next
 }
 
-func (l List) Eval(env Env) Object {
-	if l.Empty() {
-		return EmptyList
+func (l List) Nth(i int) Object {
+	if i < 0 {
+		return nil
 	}
+	if i == 0 {
+		return l.First()
+	}
+	return l.Rest().Nth(i - 1)
+}
+
+func (l List) Eval(env *Env) Object {
 	if s, ok := l.First().(Symbol); ok {
 		switch s.Name() {
 		case "import":
 			return nil
+		case "if":
+			res := Eval(l.Nth(1), env)
+			if IsTrue(res) {
+				return Eval(l.Nth(2), env)
+			}
+			if l.Len() < 4 {
+				return Nil
+			}
+			return Eval(l.Nth(3), env)
 		}
 	}
 	el := EmptyList
@@ -59,9 +93,13 @@ func (l List) Eval(env Env) Object {
 		l = l.Rest()
 	}
 	el = reverse(el)
+	log.Println(el)
+	if el.Empty() {
+		return EmptyList
+	}
 	first, ok := el.First().(Caller)
 	if !ok {
-		panic(fmt.Sprint("not caller: %s in %s", first))
+		panic(fmt.Sprintf("not callable: %s in %s", el.First(), l))
 	}
 	return first.Call(el.Rest())
 }
@@ -81,4 +119,11 @@ func reverse(l List) List {
 		l = l.Rest()
 	}
 	return ret
+}
+
+func ListFromSlice(sl []Object) (ret List) {
+	for i := len(sl) - 1; i >= 0; i-- {
+		ret = ret.Cons(sl[i])
+	}
+	return
 }

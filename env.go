@@ -25,7 +25,7 @@ func (me *Env) EvalFile(name string) error {
 		if err != nil {
 			return err
 		}
-		Eval(obj, *me)
+		Eval(obj, me)
 	}
 }
 
@@ -49,4 +49,18 @@ func (env *Env) RunProject(dir string) error {
 		}
 	}
 	return nil
+}
+
+func NewStandardEnv() (ret *Env) {
+	ret = &Env{
+		NS: NewMap(),
+	}
+	for _, b := range builtins {
+		ret.NS = ret.NS.Assoc(b.Symbol, b.Object)
+	}
+	objs := ReadString(``)
+	for _, o := range objs {
+		Eval(o, ret)
+	}
+	return
 }

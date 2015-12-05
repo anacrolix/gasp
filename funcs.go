@@ -26,6 +26,10 @@ func (me builtinCallable) Call(args List) Object {
 	return me.f(args)
 }
 
+func (me builtinCallable) True() bool {
+	return me.f != nil
+}
+
 var add = builtinCallable{
 	f: func(l List) Object {
 		var ret big.Int

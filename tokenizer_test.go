@@ -15,28 +15,33 @@ var cases = []struct {
 }{
 	{"", nil, io.EOF},
 	{"(", []Token{Token{
-		Type: LParen,
-		Line: 1,
+		Type:  LParen,
+		Line:  1,
+		Value: "(",
 	}}, io.EOF},
 	{" (", []Token{Token{
 		Type:    LParen,
 		Line:    1,
 		LineOff: 1,
+		Value:   "(",
 	}}, io.EOF},
 	{"\n(", []Token{Token{
-		Type: LParen,
-		Line: 2,
+		Type:  LParen,
+		Line:  2,
+		Value: "(",
 	}}, io.EOF},
 	{
 		"\n(\n)",
 		[]Token{
 			Token{
-				Type: LParen,
-				Line: 2,
+				Type:  LParen,
+				Line:  2,
+				Value: "(",
 			},
 			Token{
-				Type: RParen,
-				Line: 3,
+				Type:  RParen,
+				Line:  3,
+				Value: ")",
 			},
 		},
 		io.EOF,
@@ -70,6 +75,7 @@ var cases = []struct {
 				Type:    LParen,
 				Line:    1,
 				LineOff: 0,
+				Value:   "(",
 			},
 			Token{
 				Type:    TokenTypeSymbol,
@@ -99,6 +105,7 @@ var cases = []struct {
 				Type:    RParen,
 				Line:    1,
 				LineOff: 33,
+				Value:   ")",
 			},
 		},
 		io.EOF,
@@ -121,6 +128,6 @@ func TestTokenizer(t *testing.T) {
 		tr := NewTokenizer(bytes.NewReader([]byte(_case.Input)))
 		ts, err := readAllTokens(tr)
 		assert.EqualValues(t, _case.Err, err, "%q", _case.Input)
-		assert.EqualValues(t, _case.Tokens, ts)
+		assert.EqualValues(t, _case.Tokens, ts, "%q", _case.Input)
 	}
 }

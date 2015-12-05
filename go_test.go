@@ -17,5 +17,5 @@ func TestGoCall(t *testing.T) {
 	env := Env{
 		NS: NewMap().Assoc(NewSymbol("Sprintf"), WrapGo(fmt.Sprintf)),
 	}
-	assert.EqualValues(t, `"hello, world"`, EvalString(env, `(Sprintf "%s, %s" "hello" "world")`).String())
+	assert.EqualValues(t, `"hello, world"`, EvalString(&env, `(Sprintf "%s, %s" "hello" "world")`).String())
 }

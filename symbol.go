@@ -7,13 +7,17 @@ type Symbol struct {
 	Value string
 }
 
+var (
+	_ Evaler = Symbol{}
+)
+
 func NewSymbol(s string) Symbol {
 	return Symbol{
 		Value: s,
 	}
 }
 
-func (s Symbol) Eval(env Env) Object {
+func (s Symbol) Eval(env *Env) Object {
 	ret := env.NS.Get(s)
 	if ret == nil {
 		panic(fmt.Sprintf("symbol not found: %s", s.Value))

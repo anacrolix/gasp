@@ -1,5 +1,7 @@
 package gasp
 
+import "fmt"
+
 type TokenReader interface {
 	Read() (Token, error)
 }
@@ -22,13 +24,6 @@ const (
 	TokenTypeInt
 )
 
-func (t *Token) String() string {
-	switch t.Type {
-	case LParen:
-		return "("
-	case RParen:
-		return ")"
-	default:
-		return "?"
-	}
+func (t Token) String() string {
+	return fmt.Sprintf("%q:%d:%d", t.Value, t.Line, t.LineOff)
 }

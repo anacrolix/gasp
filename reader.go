@@ -87,7 +87,7 @@ func (r *Reader) readObject() (obj Object, err error) {
 		obj = i
 		r.advance()
 	default:
-		err = fmt.Errorf("unexpected token type: %d", r.t.Type)
+		err = fmt.Errorf("unexpected token: %s", r.t)
 	}
 	return
 }
