@@ -18,9 +18,9 @@ func NewSymbol(s string) Symbol {
 }
 
 func (s Symbol) Eval(env *Env) Object {
-	ret := env.NS.Get(s)
+	ret := env.Lookup(s)
 	if ret == nil {
-		panic(fmt.Sprintf("symbol not found: %s", s.Value))
+		panic(fmt.Sprintf("symbol %q not found in %s", s.Value, env.String()))
 	}
 	return ret
 }

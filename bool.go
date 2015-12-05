@@ -13,9 +13,9 @@ type _bool struct {
 
 func (me _bool) String() string {
 	if me.truth {
-		return "#t"
+		return "true"
 	} else {
-		return "#f"
+		return "false"
 	}
 }
 

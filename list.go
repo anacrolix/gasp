@@ -85,6 +85,18 @@ func (l List) Eval(env *Env) Object {
 				return Nil
 			}
 			return Eval(l.Nth(3), env)
+		case "def":
+			l = l.Rest()
+			name := l.First()
+			l = l.Rest()
+			val := Eval(l.First(), env)
+			if !l.Rest().Empty() {
+				panic(fmt.Sprintf("extraneous arguments to def: %s", l.Rest()))
+			}
+			env.Define(name, val)
+			return nil
+		case "fn":
+			return NewFunc(l.Nth(1).(List), l.Drop(2), env)
 		}
 	}
 	el := EmptyList
@@ -110,6 +122,13 @@ func (l List) AsSlice() (ret []Object) {
 		l = l.Rest()
 	}
 	return
+}
+
+func (l List) Drop(i int) List {
+	for ; i > 0; i-- {
+		l = l.Rest()
+	}
+	return l
 }
 
 func reverse(l List) List {

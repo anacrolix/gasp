@@ -5,6 +5,8 @@ import (
 	"fmt"
 	"io"
 	"math/big"
+
+	"github.com/anacrolix/missinggo"
 )
 
 type Reader struct {
@@ -22,7 +24,14 @@ func NewReader(r io.Reader) *Reader {
 }
 
 func (r *Reader) Read() (obj Object, err error) {
-	return r.readObject()
+	obj, err = r.readObject()
+	if err == io.EOF {
+		return
+	}
+	if err != nil {
+		err = fmt.Errorf("error reading form at %d:%d: %s", r.tr.line, r.tr.lineOff, err)
+	}
+	return
 }
 
 func unescapeStr(s string) (ret string, err error) {
@@ -96,13 +105,18 @@ func (r *Reader) advance() {
 	r.t, r.err = r.tr.Read()
 }
 
+func sprintsep(a ...interface{}) string {
+	s := fmt.Sprintln(a...)
+	return s[:len(s)-1]
+}
+
 func (r *Reader) readList() (ret List, err error) {
 	var objs []Object
 	for r.t.Type != RParen {
 		var obj Object
 		obj, err = r.readObject()
 		if err != nil {
-			err = fmt.Errorf("while reading list: %s", err)
+			err = fmt.Errorf("while reading list (%s: %s", sprintsep(missinggo.ConvertToSliceOfEmptyInterface(objs)...), err)
 			return
 		}
 		objs = append(objs, obj)
@@ -127,7 +141,7 @@ func ReadString(s string) (ret []Object) {
 			break
 		}
 		if err != nil {
-			panic(err)
+			panic(fmt.Errorf("error reading string %q: %s", s, err))
 		}
 		ret = append(ret, obj)
 	}

@@ -30,3 +30,14 @@ func (m Map) Assoc(key Object, value Object) Map {
 		value: value,
 	}
 }
+
+func (m *Map) Keys() (keys []Object) {
+	for m.key != nil {
+		keys = append(keys, m.key)
+		if m.m == nil {
+			break
+		}
+		m = m.m
+	}
+	return
+}

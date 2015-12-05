@@ -11,7 +11,10 @@ type builtin struct {
 	Object
 }
 
-var builtins []builtin
+var builtins = []builtin{
+	{NewSymbol("true"), True},
+	{NewSymbol("false"), False},
+}
 
 func addBuiltinFunc(name string, f func(List) Object) {
 	builtins = append(builtins, builtin{NewSymbol(name), builtinCallable{f, name}})
@@ -46,6 +49,6 @@ func init() {
 		objs := ReadString(string(s))
 		return ListFromSlice(objs)
 	})
-	addBuiltinCmpFunc(">", func(cmp int) bool { return cmp > 0 })
-	addBuiltinCmpFunc("<=", func(cmp int) bool { return cmp <= 0 })
+	// addBuiltinCmpFunc(">", func(cmp int) bool { return cmp > 0 })
+	addBuiltinCmpFunc("<", func(cmp int) bool { return cmp < 0 })
 }
