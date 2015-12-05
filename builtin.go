@@ -31,6 +31,15 @@ func addBuiltinCmpFunc(sym string, pred func(int) bool) {
 }
 
 func init() {
+	addBuiltinFunc("empty?", func(l List) Object {
+		return isEmpty(l.First())
+	})
+	addBuiltinFunc("first", func(l List) Object {
+		return l.First().(List).First()
+	})
+	addBuiltinFunc("rest", func(l List) Object {
+		return l.First().(List).Rest()
+	})
 	addBuiltinFunc("print", func(l List) Object {
 		if l.Len() != 1 {
 			panic(fmt.Sprintf("print expected exactly one argument, got %d", l.Len()))
@@ -51,4 +60,11 @@ func init() {
 	})
 	// addBuiltinCmpFunc(">", func(cmp int) bool { return cmp > 0 })
 	addBuiltinCmpFunc("<", func(cmp int) bool { return cmp < 0 })
+}
+
+func isEmpty(obj Object) Object {
+	if obj.(List).Empty() {
+		return True
+	}
+	return False
 }

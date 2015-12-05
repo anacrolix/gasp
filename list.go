@@ -97,6 +97,8 @@ func (l List) Eval(env *Env) Object {
 			return nil
 		case "fn":
 			return NewFunc(l.Nth(1).(List), l.Drop(2), env)
+		case "quote":
+			return l.Rest().First()
 		}
 	}
 	el := EmptyList

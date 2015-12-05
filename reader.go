@@ -10,8 +10,9 @@ import (
 )
 
 type Reader struct {
-	tr  *Tokenizer
-	t   Token
+	tr *Tokenizer
+	t  Token
+	// backlog []Token
 	err error
 }
 
@@ -82,11 +83,18 @@ func (r *Reader) readObject() (obj Object, err error) {
 		obj = s
 		r.advance()
 	case TokenTypeSymbol:
-		obj = Symbol{
+		s := Symbol{
 			Token: r.t,
 			Value: r.t.Value,
 		}
 		r.advance()
+		switch s.Value {
+		case "'":
+			obj, err = r.readObject()
+			obj = EmptyList.Cons(obj).Cons(NewSymbol("quote"))
+		default:
+			obj = s
+		}
 	case TokenTypeInt:
 		i := Int{
 			Token: r.t,
@@ -102,6 +110,12 @@ func (r *Reader) readObject() (obj Object, err error) {
 }
 
 func (r *Reader) advance() {
+	// if len(r.backlog) > 0 {
+	// 	r.t = r.backlog[0]
+	// 	r.backlog = r.backlog[1:]
+	// 	r.err = nil
+	// 	return
+	// }
 	r.t, r.err = r.tr.Read()
 }
 

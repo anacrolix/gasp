@@ -94,6 +94,10 @@ func NewStandardEnv() (ret *Env) {
 (def not (fn (x) (if x false true)))
 (def > (fn (a b) (< b a)))
 (def <= (fn (a b) (> b a)))
+(def reduce (fn (f cum vals)
+	(if (empty? vals)
+		cum
+		(reduce f (f cum (first vals)) (rest vals)))))
 `)
 	for _, o := range objs {
 		Eval(o, ret)

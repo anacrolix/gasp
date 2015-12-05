@@ -9,7 +9,7 @@ type TokenReader interface {
 type Token struct {
 	Type    TokenType
 	Value   string
-	Line    int64
+	Line    int64 // 1-indexed
 	LineOff int64
 }
 

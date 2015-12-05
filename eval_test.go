@@ -10,11 +10,19 @@ import (
 func TestEval(t *testing.T) {
 	env := NewStandardEnv()
 	env.NS = env.NS.Assoc(NewSymbol("+"), add).Assoc(NewSymbol("*"), multiply).Assoc(NewSymbol("-"), subtract)
-	assert.EqualValues(t, `6`, EvalString(env, `(+ 1 (+ 2 3))`).String())
-	assert.EqualValues(t, `6`, EvalString(env, `(* (+ 1 2) (- 4 2))`).String())
-	assert.EqualValues(t, `()`, EvalString(env, `()`).String())
-	assert.EqualValues(t, `42`, EvalString(env, `(if (> 2 1) 42)`).String())
-	assert.EqualValues(t, `nil`, EvalString(env, `(if (<= 2 1) 42)`).String())
-	assert.EqualValues(t, `false`, EvalString(env, `(not (< 1 2))`).String())
-	assert.EqualValues(t, `true`, EvalString(env, `(not (> 1 2))`).String())
+	for _, _case := range []struct {
+		Input, Output string
+	}{
+		{`6`, `(+ 1 (+ 2 3))`},
+		{`6`, `(+ 1 (+ 2 3))`},
+		{`6`, `(* (+ 1 2) (- 4 2))`},
+		{`()`, `()`},
+		{`42`, `(if (> 2 1) 42)`},
+		{`nil`, `(if (<= 2 1) 42)`},
+		{`false`, `(not (< 1 2))`},
+		{`true`, `(not (> 1 2))`},
+		{`13`, `(reduce + 3 '(1 2 3 4))`},
+	} {
+		assert.EqualValues(t, _case.Input, EvalString(env, _case.Output).String())
+	}
 }
