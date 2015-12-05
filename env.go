@@ -118,6 +118,17 @@ func NewStandardEnv() (ret *Env) {
 		(if (first a)
 			(apply and (rest a))
 			false)))
+(defmacro let [lets body]
+	(defn inner [lets]
+		)
+	(inner lets))
+(defmacro -> [x & forms]
+	(defn loop [x forms]
+		(if (empty? forms)
+			(loop (list (first (first forms)) x (rest (first forms))) (rest forms))
+			x))
+	(loop x forms))
+(defmacro infix [a op b] (list op a b))
 `)
 	for _, o := range objs {
 		Eval(o, ret)

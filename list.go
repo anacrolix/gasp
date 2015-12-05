@@ -104,6 +104,9 @@ func (l List) Eval(env *Env) Object {
 		case "quote":
 			return l.Rest().First()
 		case "macro":
+			if l.Len() != 1 {
+				panic(l.Len())
+			}
 			return NewMacro(Eval(l.Rest().First(), env))
 		case "eval":
 			// This is here because I don't propagate env to calls.
@@ -124,7 +127,11 @@ func (l List) Eval(env *Env) Object {
 		l = l.Rest()
 	}
 	args = reverse(args)
-	return first.(Caller).Call(args)
+	c, ok := first.(Caller)
+	if !ok {
+		panic(fmt.Sprintf("not callable: %s", first))
+	}
+	return c.Call(args)
 }
 
 func (l List) AsSlice() (ret []Object) {

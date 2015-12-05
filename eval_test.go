@@ -30,6 +30,8 @@ func TestEval(t *testing.T) {
 		{`10`, `(apply + '(1 2 3 4))`},
 		{`(1 2 3 4)`, `(conj '(1 2) 3 4)`},
 		{`false`, `(and (< 1 2) (> 3 4))`},
+		{`3`, `(-> '(1 ((2 3) 4)) second first second)`},
+		{`3`, `(infix 1 + 2)`},
 		// {`8`, `(let [c (+ 1 2)
 		//            		 d 5
 		//            		 e 6]

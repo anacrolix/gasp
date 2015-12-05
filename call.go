@@ -9,11 +9,13 @@ type Caller interface {
 	Call(List) Object
 }
 
-func Call(obj Object, args List) Object {
+func Call(obj Object, args List) (ret Object) {
 	log.Println("call", obj, args)
 	c, ok := obj.(Caller)
 	if !ok {
 		panic(fmt.Sprintf("not callable: %s", obj))
 	}
-	return c.Call(args)
+	ret = c.Call(args)
+	log.Print("<-call", ret)
+	return
 }
