@@ -1,6 +1,7 @@
 package gasp
 
 import (
+	"log"
 	"testing"
 
 	_ "github.com/anacrolix/envpprof"
@@ -24,7 +25,9 @@ func TestEval(t *testing.T) {
 		{`13`, `(reduce + 3 '(1 2 3 4))`},
 		{`(3 2 1)`, `(reduce (flip cons) () '(1 2 3))`},
 		{`(1 1 9 9 8 8 8)`, `(list 1 1 9 9 8 8 8)`},
+		// {`(1 2 3 4)`, `(conj '(1 2) 3 4)`},
 	} {
+		log.Println("run", _case.Input)
 		assert.EqualValues(t, _case.Input, EvalString(env, _case.Output).String())
 	}
 }

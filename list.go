@@ -72,7 +72,11 @@ func (l List) Nth(i int) Object {
 }
 
 func (l List) Eval(env *Env) Object {
-	if s, ok := l.First().(Symbol); ok {
+	if l.Empty() {
+		return l
+	}
+	first := l.First()
+	if s, ok := first.(Symbol); ok {
 		switch s.Name() {
 		case "import":
 			return nil
@@ -99,23 +103,23 @@ func (l List) Eval(env *Env) Object {
 			return NewFunc(l.Nth(1).(List), l.Drop(2), env)
 		case "quote":
 			return l.Rest().First()
+		case "macro":
+			return NewMacro(Eval(l.Rest().First(), env))
 		}
 	}
-	el := EmptyList
+	first = Eval(first, env)
+	l = l.Rest()
+	if m, ok := first.(Macro); ok {
+		log.Println("macro", m.obj)
+		return Eval(Call(m.obj, l), env)
+	}
+	var args List
 	for !l.Empty() {
-		el = el.Cons(Eval(l.First(), env))
+		args = args.Cons(Eval(l.First(), env))
 		l = l.Rest()
 	}
-	el = reverse(el)
-	log.Println(el)
-	if el.Empty() {
-		return EmptyList
-	}
-	first, ok := el.First().(Caller)
-	if !ok {
-		panic(fmt.Sprintf("not callable: %s in %s", el.First(), l))
-	}
-	return first.Call(el.Rest())
+	args = reverse(args)
+	return first.(Caller).Call(args)
 }
 
 func (l List) AsSlice() (ret []Object) {

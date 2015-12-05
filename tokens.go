@@ -22,6 +22,7 @@ const (
 	Whitespace
 	TokenTypeSymbol
 	TokenTypeInt
+	TokenTypeComment
 )
 
 func (t Token) String() string {

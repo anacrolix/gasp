@@ -10,9 +10,8 @@ import (
 )
 
 type Reader struct {
-	tr *Tokenizer
-	t  Token
-	// backlog []Token
+	tr  *Tokenizer
+	t   Token
 	err error
 }
 
@@ -103,6 +102,8 @@ func (r *Reader) readObject() (obj Object, err error) {
 		i.Value.SetString(r.t.Value, 0)
 		obj = i
 		r.advance()
+	case TokenTypeComment:
+		r.advance()
 	default:
 		err = fmt.Errorf("unexpected token: %s", r.t)
 	}
@@ -110,12 +111,6 @@ func (r *Reader) readObject() (obj Object, err error) {
 }
 
 func (r *Reader) advance() {
-	// if len(r.backlog) > 0 {
-	// 	r.t = r.backlog[0]
-	// 	r.backlog = r.backlog[1:]
-	// 	r.err = nil
-	// 	return
-	// }
 	r.t, r.err = r.tr.Read()
 }
 
@@ -155,7 +150,7 @@ func ReadString(s string) (ret []Object) {
 			break
 		}
 		if err != nil {
-			panic(fmt.Errorf("error reading string %q: %s", s, err))
+			panic(fmt.Errorf("error reading string %s", err))
 		}
 		ret = append(ret, obj)
 	}

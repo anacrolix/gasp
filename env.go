@@ -80,7 +80,10 @@ func (env *Env) WriteNS(w io.Writer) {
 	for _, key := range env.NS.Keys() {
 		fmt.Fprintf(w, "%s ", key.String())
 	}
-	fmt.Fprintf(w, "}")
+	fmt.Fprintf(w, "}\n")
+	if env.Outer != nil {
+		env.Outer.WriteNS(w)
+	}
 }
 
 func NewStandardEnv() (ret *Env) {
@@ -94,6 +97,8 @@ func NewStandardEnv() (ret *Env) {
 (def not (fn (x) (if x false true)))
 (def > (fn (a b) (< b a)))
 (def <= (fn (a b) (> b a)))
+(def or (fn [& next] (if (empty? next) false (if (first next) (first next) (apply or (rest next))))))
+(def == (fn [a b] (not (or (< a b) (> b a)))))
 (def reduce (fn (f cum vals)
 	(if (empty? vals)
 		cum
@@ -101,6 +106,16 @@ func NewStandardEnv() (ret *Env) {
 (def flip (fn (f) (fn (a b) (f b a))))
 (def reverse (fn (coll) (reduce (flip cons) () coll)))
 (def list (fn (& elems) (reverse (reduce (fn (coll e) (cons e coll)) () elems))))
+(def len (fn [x] (if (empty? x) 0 (+ 1 (len (rest x))))))
+(def nth (fn [l i] (if (== i 0) (first l) (nth (rest l) (- i 1)))))
+(def concat (fn (& colls)
+	(if (<= (len colls) 1)
+		(first colls)
+		(if (empty? (nth colls 1))
+			(concat (first colls) (drop 2 colls))
+			(concat (reverse (cons (reverse (first colls)))) (rest (nth colls 1)) (drop 2 colls))))))
+(def apply (macro (fn [f args] (cons f args))))
+(def defn (macro (fn (name params & body) (list 'def name (concat (list 'fn params) body)))))
 `)
 	for _, o := range objs {
 		Eval(o, ret)

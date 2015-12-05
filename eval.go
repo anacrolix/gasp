@@ -7,6 +7,7 @@ type Evaler interface {
 }
 
 func Eval(obj Object, env *Env) Object {
+	log.Println("eval", obj)
 	if e, ok := obj.(Evaler); ok {
 		return e.Eval(env)
 	}

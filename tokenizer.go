@@ -96,11 +96,15 @@ var tokens = []struct {
 	},
 	{
 		Type:   TokenTypeSymbol,
-		Regexp: regexp.MustCompile(`^([a-zA-Z*+-/.:<>=&?']+)`),
+		Regexp: regexp.MustCompile(`^('|[a-zA-Z*+-/.:<>=&?][a-zA-Z*+-/.:<>=&?']*)`),
 	},
 	{
 		Type:   TokenTypeInt,
 		Regexp: regexp.MustCompile(`^([0-9]+)`),
+	},
+	{
+		Type:   TokenTypeComment,
+		Regexp: regexp.MustCompile(`^;([^\n]*)`),
 	},
 }
 

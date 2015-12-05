@@ -5,10 +5,6 @@ import (
 	"math/big"
 )
 
-type Caller interface {
-	Call(List) Object
-}
-
 type builtinCallable struct {
 	f    func(l List) Object
 	name string

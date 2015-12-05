@@ -14,6 +14,8 @@ type builtin struct {
 var builtins = []builtin{
 	{NewSymbol("true"), True},
 	{NewSymbol("false"), False},
+	{NewSymbol("+"), add},
+	{NewSymbol("-"), subtract},
 }
 
 func addBuiltinFunc(name string, f func(List) Object) {

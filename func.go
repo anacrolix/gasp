@@ -57,5 +57,10 @@ func (f Func) Call(args List) (ret Object) {
 }
 
 func (f Func) String() string {
-	return f.body.Cons(f.params).Cons(NewSymbol("fn")).String()
+	l := f.body
+	if f.rest != nil {
+		l = l.Cons(f.rest).Cons(NewSymbol("&"))
+	}
+	l = l.Cons(f.params).Cons(NewSymbol("fn"))
+	return l.String()
 }
