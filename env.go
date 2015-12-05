@@ -108,14 +108,14 @@ func NewStandardEnv() (ret *Env) {
 (def list (fn (& elems) (reverse (reduce (fn (coll e) (cons e coll)) () elems))))
 (def len (fn [x] (if (empty? x) 0 (+ 1 (len (rest x))))))
 (def nth (fn [l i] (if (== i 0) (first l) (nth (rest l) (- i 1)))))
-(def concat (fn (& colls)
-	(if (<= (len colls) 1)
-		(first colls)
-		(if (empty? (nth colls 1))
-			(concat (first colls) (drop 2 colls))
-			(concat (reverse (cons (reverse (first colls)))) (rest (nth colls 1)) (drop 2 colls))))))
-(def apply (macro (fn [f args] (cons f args))))
+(def apply (fn [f args] (eval (cons f args))))
 (def defn (macro (fn (name params & body) (list 'def name (concat (list 'fn params) body)))))
+(defn conj (a & b) (concat a b))
+(defn and [& a]
+	(if (empty? a) true
+		(if (first a)
+			(apply and (rest a))
+			false)))
 `)
 	for _, o := range objs {
 		Eval(o, ret)

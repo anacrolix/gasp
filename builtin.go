@@ -36,6 +36,18 @@ func init() {
 	addBuiltinFunc("cons", func(l List) Object {
 		return l.Rest().First().(List).Cons(l.First())
 	})
+	addBuiltinFunc("concat", func(l List) Object {
+		ret := EmptyList
+		for !l.Empty() {
+			r := l.First().(List)
+			for !r.Empty() {
+				ret = ret.Cons(r.First())
+				r = r.Rest()
+			}
+			l = l.Rest()
+		}
+		return reverse(ret)
+	})
 	addBuiltinFunc("empty?", func(l List) Object {
 		return isEmpty(l.First())
 	})

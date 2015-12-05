@@ -105,6 +105,9 @@ func (l List) Eval(env *Env) Object {
 			return l.Rest().First()
 		case "macro":
 			return NewMacro(Eval(l.Rest().First(), env))
+		case "eval":
+			// This is here because I don't propagate env to calls.
+			return Eval(Eval(l.Rest().First(), env), env)
 		}
 	}
 	first = Eval(first, env)
