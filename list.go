@@ -104,7 +104,7 @@ func (l List) Eval(env *Env) Object {
 		case "quote":
 			return l.Rest().First()
 		case "macro":
-			if l.Len() != 1 {
+			if l.Len() != 2 {
 				panic(l.Len())
 			}
 			return NewMacro(Eval(l.Rest().First(), env))
