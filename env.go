@@ -118,10 +118,20 @@ func NewStandardEnv() (ret *Env) {
 		(if (first a)
 			(apply and (rest a))
 			false)))
-;(defmacro let [lets body]
-;	(defn inner [lets]
-;		)
-;	(inner lets))
+(defn -- [n] (- n 1))
+(defn drop [n L]
+	(if n (drop (-- n) (rest L)) L))
+(defmacro let [lets body]
+	(defn inner [lets]
+		(if (empty? lets)
+			body
+			(list
+				(list
+					'fn
+					(list (first lets))
+					(inner (drop 2 lets)))
+				(second lets))))
+	(inner lets))
 (defn second [l] (first (rest l)))
 (defmacro -> [x & forms]
 	(defn loop [forms]

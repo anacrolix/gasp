@@ -32,10 +32,10 @@ func TestEval(t *testing.T) {
 		{`false`, `(and (< 1 2) (> 3 4))`},
 		{`3`, `(-> '(1 ((2 3) 4)) second first second)`},
 		{`3`, `(infix 1 + 2)`},
-		// {`8`, `(let [c (+ 1 2)
-		//            		 d 5
-		//            		 e 6]
-		//             	   (- (+ d e) c))`},
+		{`8`, `(let [c (+ 1 2)
+		           		 d 5
+		           		 e 6]
+		            	   (- (+ d e) c))`},
 		// (-> (+ d e) (- c)))
 	} {
 		log.Println("run", _case.Input)
