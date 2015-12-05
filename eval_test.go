@@ -22,6 +22,8 @@ func TestEval(t *testing.T) {
 		{`false`, `(not (< 1 2))`},
 		{`true`, `(not (> 1 2))`},
 		{`13`, `(reduce + 3 '(1 2 3 4))`},
+		{`(3 2 1)`, `(reduce (flip cons) () '(1 2 3))`},
+		{`(1 1 9 9 8 8 8)`, `(list 1 1 9 9 8 8 8)`},
 	} {
 		assert.EqualValues(t, _case.Input, EvalString(env, _case.Output).String())
 	}

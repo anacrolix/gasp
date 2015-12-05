@@ -3,9 +3,10 @@ package gasp
 import "github.com/bradfitz/iter"
 
 type Func struct {
-	args  List
-	body  List
-	outer *Env
+	params List
+	rest   Object
+	body   List
+	outer  *Env
 }
 
 var (
@@ -13,8 +14,27 @@ var (
 	// _ Evaler = Func{}
 )
 
+func parseParams(ps List) (pos List, rest Object) {
+	for !ps.Empty() {
+		s := ps.First().(Symbol)
+		if s.Value == "&" {
+			rest = ps.Rest().First()
+			break
+		}
+		pos = pos.Cons(s)
+		ps = ps.Rest()
+	}
+	pos = reverse(pos)
+	return
+}
+
 func NewFunc(args List, body List, outer *Env) Func {
-	return Func{args, body, outer}
+	f := Func{
+		body:  body,
+		outer: outer,
+	}
+	f.params, f.rest = parseParams(args)
+	return f
 }
 
 func (f Func) Call(args List) (ret Object) {
@@ -22,11 +42,11 @@ func (f Func) Call(args List) (ret Object) {
 		Outer: f.outer,
 		NS:    NewMap(),
 	}
-	if args.Len() != f.args.Len() {
-		panic("argument count mismatch")
+	for i := range iter.N(f.params.Len()) {
+		env.Define(f.params.Nth(i), args.Nth(i))
 	}
-	for i := range iter.N(f.args.Len()) {
-		env.Define(f.args.Nth(i), args.Nth(i))
+	if f.rest != nil {
+		env.Define(f.rest, args.Drop(f.params.Len()))
 	}
 	body := f.body
 	for !body.Empty() {
@@ -37,5 +57,5 @@ func (f Func) Call(args List) (ret Object) {
 }
 
 func (f Func) String() string {
-	return f.body.Cons(f.args).Cons(NewSymbol("fn")).String()
+	return f.body.Cons(f.params).Cons(NewSymbol("fn")).String()
 }

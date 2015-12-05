@@ -31,6 +31,9 @@ func addBuiltinCmpFunc(sym string, pred func(int) bool) {
 }
 
 func init() {
+	addBuiltinFunc("cons", func(l List) Object {
+		return l.Rest().First().(List).Cons(l.First())
+	})
 	addBuiltinFunc("empty?", func(l List) Object {
 		return isEmpty(l.First())
 	})

@@ -98,6 +98,9 @@ func NewStandardEnv() (ret *Env) {
 	(if (empty? vals)
 		cum
 		(reduce f (f cum (first vals)) (rest vals)))))
+(def flip (fn (f) (fn (a b) (f b a))))
+(def reverse (fn (coll) (reduce (flip cons) () coll)))
+(def list (fn (& elems) (reverse (reduce (fn (coll e) (cons e coll)) () elems))))
 `)
 	for _, o := range objs {
 		Eval(o, ret)
