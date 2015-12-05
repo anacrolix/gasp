@@ -114,7 +114,9 @@ func (l List) Eval(env *Env) Object {
 	l = l.Rest()
 	if m, ok := first.(Macro); ok {
 		log.Println("macro", m.obj)
-		return Eval(Call(m.obj, l), env)
+		mr := Call(m.obj, l)
+		log.Println("macro returned", mr)
+		return Eval(mr, env)
 	}
 	var args List
 	for !l.Empty() {

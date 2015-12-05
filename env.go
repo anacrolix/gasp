@@ -109,7 +109,9 @@ func NewStandardEnv() (ret *Env) {
 (def len (fn [x] (if (empty? x) 0 (+ 1 (len (rest x))))))
 (def nth (fn [l i] (if (== i 0) (first l) (nth (rest l) (- i 1)))))
 (def apply (fn [f args] (eval (cons f args))))
-(def defn (macro (fn (name params & body) (list 'def name (concat (list 'fn params) body)))))
+; it's a macro function that returns a macro function.
+(def defmacro (macro (fn [name & args] (list 'def name (list 'macro (cons 'fn args))))))
+(defmacro defn [name & args] (list 'def name (cons 'fn args)))
 (defn conj (a & b) (concat a b))
 (defn and [& a]
 	(if (empty? a) true
