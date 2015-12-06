@@ -140,6 +140,7 @@ func NewStandardEnv() (ret *Env) {
 			(list (first forms) (loop (rest forms)))))
 	(loop (reverse forms)))
 (defmacro infix [a op b] (list op a b))
+(defn >= (a b) (not (< a b)))
 `)
 	for _, o := range objs {
 		Eval(o, ret)

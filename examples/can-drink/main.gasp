@@ -1,0 +1,3 @@
+(let [age (first (read))
+      legal (>= age 18)]
+  (print (str (if legal "can" "can't") " drink")))
