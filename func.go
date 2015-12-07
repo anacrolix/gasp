@@ -1,6 +1,10 @@
 package gasp
 
-import "github.com/bradfitz/iter"
+import (
+	"log"
+
+	"github.com/bradfitz/iter"
+)
 
 type Func struct {
 	params List
@@ -42,11 +46,15 @@ func (f Func) Call(args List) (ret Object) {
 		Outer: f.outer,
 		NS:    NewMap(),
 	}
+	log.Println("func call")
 	for i := range iter.N(f.params.Len()) {
 		env.Define(f.params.Nth(i), args.Nth(i))
+		log.Println(f.params.Nth(i), "=", args.Nth(i))
 	}
 	if f.rest != nil {
 		env.Define(f.rest, args.Drop(f.params.Len()))
+	} else if f.params.Len() != args.Len() {
+		panic("argument count mismatch")
 	}
 	body := f.body
 	for !body.Empty() {

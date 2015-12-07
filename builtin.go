@@ -71,6 +71,10 @@ func init() {
 	addBuiltinFunc("empty?", func(l List) Object {
 		return isEmpty(l.First())
 	})
+	addBuiltinFunc("list?", func(l List) Object {
+		_, ok := l.First().(List)
+		return NewBool(ok)
+	})
 	addBuiltinFunc("first", func(l List) Object {
 		return l.First().(List).First()
 	})

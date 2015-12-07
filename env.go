@@ -108,7 +108,6 @@ func NewStandardEnv() (ret *Env) {
 (def list (fn (& elems) (reverse (reduce (fn (coll e) (cons e coll)) () elems))))
 (def len (fn [x] (if (empty? x) 0 (+ 1 (len (rest x))))))
 (def nth (fn [l i] (if (== i 0) (first l) (nth (rest l) (- i 1)))))
-(def apply (fn [f args] (eval (cons f args))))
 ; it's a macro function that returns a macro function.
 (def defmacro (macro (fn [name & args] (list 'def name (list 'macro (cons 'fn args))))))
 (defmacro defn [name & args] (list 'def name (cons 'fn args)))
@@ -133,13 +132,15 @@ func NewStandardEnv() (ret *Env) {
 				(second lets))))
 	(inner lets))
 (defn second [l] (first (rest l)))
-(defmacro -> [x & forms]
-	(defn loop [forms]
 ;(-> a b (c d)) -> (c (b a) d)
-		(if (empty? forms)
-			x
-			(list (first forms) (loop (rest forms)))))
-	(loop (reverse forms)))
+(defmacro -> [x & forms]
+	(defn loop [f & forms]
+		(let [embed (if (empty? forms) x (apply loop forms))]
+			(if (list? f)
+				(concat (list (first f) embed) (rest f))
+				(list f embed))))
+
+	(apply loop (reverse forms)))
 (defmacro infix [a op b] (list op a b))
 (defn >= (a b) (not (< a b)))
 (defn comp [& fns]

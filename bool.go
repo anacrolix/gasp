@@ -22,3 +22,11 @@ func (me _bool) String() string {
 func (me _bool) True() bool {
 	return me.truth
 }
+
+func NewBool(b bool) Object {
+	if b {
+		return True
+	} else {
+		return False
+	}
+}
