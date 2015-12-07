@@ -68,7 +68,7 @@ func (me *Tokenizer) advance(n int) {
 }
 
 func (me *Tokenizer) buffer() (err error) {
-	b := make([]byte, 4096)
+	b := make([]byte, 1)
 	n, err := me.r.Read(b)
 	me.buf = append(me.buf, b[:n]...)
 	return
@@ -96,7 +96,7 @@ var tokens = []struct {
 	},
 	{
 		Type:   TokenTypeSymbol,
-		Regexp: regexp.MustCompile(`^('|[a-zA-Z*+-/.:<>=&?][a-zA-Z*+-/.:<>=&?']*)`),
+		Regexp: regexp.MustCompile(`^('|[a-zA-Z*+-/.:<>=&?_][a-zA-Z*+-/.:<>=&?'_]*)`),
 	},
 	{
 		Type:   TokenTypeInt,

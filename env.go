@@ -135,12 +135,21 @@ func NewStandardEnv() (ret *Env) {
 (defn second [l] (first (rest l)))
 (defmacro -> [x & forms]
 	(defn loop [forms]
+;(-> a b (c d)) -> (c (b a) d)
 		(if (empty? forms)
 			x
 			(list (first forms) (loop (rest forms)))))
 	(loop (reverse forms)))
 (defmacro infix [a op b] (list op a b))
 (defn >= (a b) (not (< a b)))
+(defn comp [& fns]
+	(defn unpack [f & fns]
+		(if fns
+			(fn [& args] (f (apply (apply unpack fns) args)))
+			f))
+	(apply unpack fns))
+(defn partial [f & args] (fn [& rest] (apply f (concat args rest))))
+(def <> (comp not ==))
 `)
 	for _, o := range objs {
 		Eval(o, ret)

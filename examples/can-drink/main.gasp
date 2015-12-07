@@ -1,3 +1,11 @@
-(let [age (first (read))
-      legal (>= age 18)]
-  (print (str (if legal "can" "can't") " drink")))
+
+(defn print-can-drink [age]
+    (let [legal (>= age 18)]
+        (print (str age " is" (if legal "" " not") " old enough to drink"))))
+(defn one []
+    (def age (read))
+    (if (<> age "eof")
+        (do
+            (print-can-drink age)
+            (one))))
+(one)

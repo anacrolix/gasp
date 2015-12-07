@@ -33,10 +33,15 @@ func TestEval(t *testing.T) {
 		{`3`, `(-> '(1 ((2 3) 4)) second first second)`},
 		{`3`, `(infix 1 + 2)`},
 		{`8`, `(let [c (+ 1 2)
-		           		 d 5
-		           		 e 6]
-		            	   (- (+ d e) c))`},
-		// (-> (+ d e) (- c)))
+		           		d 5
+		           		e 6]
+		            (- (+ d e) c)
+		            ;(-> (+ d e) (- c))
+		            )`},
+		{`6`, `((partial * 2) 3)`},
+		{`5`, `((comp (fn [x] (- x 4)) (partial * 3) (partial + 2)) 1)`},
+		{`true`, `(<> 1 2)`},
+		{`false`, `(<> 1 1)`},
 	} {
 		log.Println("run", _case.Input)
 		assert.EqualValues(t, _case.Input, EvalString(env, _case.Output).String())

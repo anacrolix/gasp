@@ -2,7 +2,7 @@ package gasp
 
 import (
 	"fmt"
-	"io/ioutil"
+	"io"
 	"os"
 )
 
@@ -33,13 +33,25 @@ func addBuiltinCmpFunc(sym string, pred func(int) bool) {
 }
 
 func init() {
+	addBuiltinFunc("nil?", func(l List) Object {
+		if l.First() == nil {
+			return True
+		} else {
+			return False
+		}
+	})
 	addBuiltinFunc("cons", func(l List) Object {
 		return l.Rest().First().(List).Cons(l.First())
 	})
 	addBuiltinFunc("str", func(l List) Object {
 		var s string
 		for !l.Empty() {
-			s += l.First().(String).Value
+			switch v := l.First().(type) {
+			case String:
+				s += v.Value
+			default:
+				s += v.String()
+			}
 			l = l.Rest()
 		}
 		return NewString(s)
@@ -76,14 +88,19 @@ func init() {
 		if !l.Empty() {
 			panic("read doesn't take arguments")
 		}
-		s, err := ioutil.ReadAll(os.Stdin)
+		r := NewReader(os.Stdin)
+		o, err := r.Read()
+
 		if err != nil {
-			panic(err)
+			if err != io.EOF {
+				panic(err)
+			}
+			if o == nil {
+				o = NewKeyword("eof")
+			}
 		}
-		objs := ReadString(string(s))
-		return ListFromSlice(objs)
+		return o
 	})
-	// addBuiltinCmpFunc(">", func(cmp int) bool { return cmp > 0 })
 	addBuiltinCmpFunc("<", func(cmp int) bool { return cmp < 0 })
 }
 

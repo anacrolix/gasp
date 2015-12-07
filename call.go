@@ -16,6 +16,5 @@ func Call(obj Object, args List) (ret Object) {
 		panic(fmt.Sprintf("not callable: %s", obj))
 	}
 	ret = c.Call(args)
-	log.Print("<-call", ret)
 	return
 }

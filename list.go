@@ -99,6 +99,14 @@ func (l List) Eval(env *Env) Object {
 			}
 			env.Define(name, val)
 			return nil
+		case "do":
+			var ret Object
+			l = l.Rest()
+			for !l.Empty() {
+				ret = Eval(l.First(), env)
+				l = l.Rest()
+			}
+			return ret
 		case "fn":
 			return NewFunc(l.Nth(1).(List), l.Drop(2), env)
 		case "quote":
@@ -127,11 +135,7 @@ func (l List) Eval(env *Env) Object {
 		l = l.Rest()
 	}
 	args = reverse(args)
-	c, ok := first.(Caller)
-	if !ok {
-		panic(fmt.Sprintf("not callable: %s", first))
-	}
-	return c.Call(args)
+	return Call(first, args)
 }
 
 func (l List) AsSlice() (ret []Object) {
