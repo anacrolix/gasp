@@ -16,6 +16,7 @@ var builtins = []builtin{
 	{NewSymbol("false"), False},
 	{NewSymbol("+"), add},
 	{NewSymbol("-"), subtract},
+	{NewSymbol("*"), multiply},
 }
 
 func addBuiltinFunc(name string, f func(List) Object) {

@@ -10,7 +10,6 @@ import (
 
 func TestEval(t *testing.T) {
 	env := NewStandardEnv()
-	env.NS = env.NS.Assoc(NewSymbol("+"), add).Assoc(NewSymbol("*"), multiply).Assoc(NewSymbol("-"), subtract)
 	for _, _case := range []struct {
 		Input, Output string
 	}{
@@ -45,8 +44,7 @@ func TestEval(t *testing.T) {
 		           		d 5
 		           		e 6]
 		            (-> (+ d e) (- c))
-		            )`}, //
-		// ;(- (+ d e) c)
+		            )`},
 		{`6`, `((partial * 2) 3)`},
 		{`5`, `((comp (fn [x] (- x 4)) (partial * 3) (partial + 2)) 1)`},
 		{`true`, `(<> 1 2)`},

@@ -7,9 +7,8 @@ type Evaler interface {
 }
 
 func Eval(obj Object, env *Env) (ret Object) {
-	log.Println("eval", obj)
-	defer func() { log.Println("eval", obj, "->", ret) }()
 	if e, ok := obj.(Evaler); ok {
+		defer func() { log.Println("eval", obj, "->", ret) }()
 		ret = e.Eval(env)
 		return
 	}

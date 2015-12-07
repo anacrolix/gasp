@@ -10,11 +10,11 @@ type Caller interface {
 }
 
 func Call(obj Object, args List) (ret Object) {
-	log.Println("call", obj, args)
 	c, ok := obj.(Caller)
 	if !ok {
 		panic(fmt.Sprintf("not callable: %s", obj))
 	}
 	ret = c.Call(args)
+	log.Println("call", obj, "with", args, "returns", ret)
 	return
 }
