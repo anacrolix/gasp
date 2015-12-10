@@ -78,18 +78,6 @@ func (l List) Eval(env *Env) Object {
 	first := l.First()
 	if s, ok := first.(Symbol); ok {
 		switch s.Name() {
-		case "apply":
-			l = l.Rest()
-			f := Eval(l.First(), env)
-			l = l.Rest()
-			l = reverse(l)
-			args := Eval(l.First(), env).(List)
-			l = l.Rest()
-			for !l.Empty() {
-				args = args.Cons(Eval(l.First(), env))
-				l = l.Rest()
-			}
-			return Call(f, args)
 		case "import":
 			return nil
 		case "if":

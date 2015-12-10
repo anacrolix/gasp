@@ -107,6 +107,17 @@ func init() {
 		return o
 	})
 	addBuiltinCmpFunc("<", func(cmp int) bool { return cmp < 0 })
+	addBuiltinFunc("apply", func(l List) Object {
+		f := l.First()
+		l = reverse(l.Rest())
+		args := l.First().(List)
+		l = l.Rest()
+		for !l.Empty() {
+			args = args.Cons(l.First())
+			l = l.Rest()
+		}
+		return Call(f, args)
+	})
 }
 
 func isEmpty(obj Object) Object {
