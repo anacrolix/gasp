@@ -144,13 +144,24 @@ func NewStandardEnv() (ret *Env) {
 (defmacro infix [a op b] (list op a b))
 (defn >= (a b) (not (< a b)))
 (defn comp [& fns]
-	(defn unpack [f & fns]
-		(if fns
-			(fn [& args] (f (apply (apply unpack fns) args)))
-			f))
-	(apply unpack fns))
+	(fn [& args] (first (reduce
+		(fn [args f] (list (apply f args)))
+		args
+		(reverse fns)))))
 (defn partial [f & args] (fn [& rest] (apply f (concat args rest))))
 (def <> (comp not ==))
+(defn any [args]
+	(if (empty? args) false
+	(if (first args) true
+	(any (rest args)))))
+(defn zip [& args]
+	(if (any (map empty? args)) ()
+	(cons (map first args) (apply zip (map rest args)))))
+(defn map [f & args]
+	(reverse
+		(if (-> args rest empty?)
+			(reduce (fn [cum val] (cons (f val) cum)) () (first args))
+			(reduce (fn [cum val] (cons (apply f val) cum)) () (apply zip args)))))
 `)
 	for _, o := range objs {
 		Eval(o, ret)

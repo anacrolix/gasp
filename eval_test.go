@@ -49,6 +49,16 @@ func TestEval(t *testing.T) {
 		{`5`, `((comp (fn [x] (- x 4)) (partial * 3) (partial + 2)) 1)`},
 		{`true`, `(<> 1 2)`},
 		{`false`, `(<> 1 1)`},
+		{`false`, `(any ())`},
+		{`false`, `(any '(0))`},
+		{`true`, `(any '(1))`},
+		{`true`, `(any '(1 0))`},
+		{`true`, `(any '(0 1))`},
+		{`false`, `(any '(0 0))`},
+		{`()`, `(zip '(0) ())`},
+		{`(2 4 6)`, `(map (partial * 2) '(1 2 3))`},
+		{`(-1 -2 -3)`, `(map - '(1 2 3) '(2 4 6))`},
+		{`((1 3) (2 4))`, `(zip '(1 2) '(3 4))`},
 	} {
 		log.Println("run", _case.Input)
 		assert.EqualValues(t, _case.Input, EvalString(env, _case.Output).String())
