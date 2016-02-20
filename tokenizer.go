@@ -115,7 +115,7 @@ func (me *Tokenizer) match() (tt TokenType, ms [][]byte, ok bool) {
 			continue
 		}
 		if ok {
-			panic(fmt.Sprintf("ambiguous token: %s %q and %s %q", tt, ms[0], t.Type, ms1[0]))
+			panic(fmt.Sprintf("ambiguous token: %v %q and %v %q", tt, ms[0], t.Type, ms1[0]))
 		}
 		ms = ms1
 		tt = t.Type
