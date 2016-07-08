@@ -19,6 +19,24 @@ var builtins = []builtin{
 	{NewSymbol("*"), multiply},
 }
 
+type goBuiltin struct {
+	Symbol string
+	Object interface{}
+}
+
+var goBuiltins = []goBuiltin{
+	{"fmt.Printf", fmt.Printf},
+}
+
+func addGoBuiltins() {
+	for _, gb := range goBuiltins {
+		builtins = append(builtins, builtin{
+			NewSymbol("go:" + gb.Symbol),
+			WrapGo(gb.Object),
+		})
+	}
+}
+
 func addBuiltinFunc(name string, f func(List) Object) {
 	builtins = append(builtins, builtin{NewSymbol(name), builtinCallable{f, name}})
 }
@@ -33,7 +51,7 @@ func addBuiltinCmpFunc(sym string, pred func(int) bool) {
 	})
 }
 
-func init() {
+func addSpecialBuiltins() {
 	addBuiltinFunc("nil?", func(l List) Object {
 		if l.First() == nil {
 			return True
@@ -118,6 +136,11 @@ func init() {
 		}
 		return Call(f, args)
 	})
+}
+
+func init() {
+	addSpecialBuiltins()
+	addGoBuiltins()
 }
 
 func isEmpty(obj Object) Object {
