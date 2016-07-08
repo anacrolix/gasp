@@ -11,6 +11,7 @@ import (
 )
 
 var args struct {
+	tagflag.StartPos
 	ProjectDir string `type:"pos"`
 }
 
