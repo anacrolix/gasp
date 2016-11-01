@@ -6,7 +6,7 @@ import (
 	"io"
 	"math/big"
 
-	"github.com/anacrolix/missinggo"
+	"github.com/anacrolix/missinggo/slices"
 )
 
 type Reader struct {
@@ -125,7 +125,7 @@ func (r *Reader) readList() (ret List, err error) {
 		var obj Object
 		obj, err = r.readObject()
 		if err != nil {
-			err = fmt.Errorf("while reading list (%s: %s", sprintsep(missinggo.ConvertToSliceOfEmptyInterface(objs)...), err)
+			err = fmt.Errorf("while reading list (%s: %s", sprintsep(slices.ToEmptyInterface(objs)...), err)
 			return
 		}
 		objs = append(objs, obj)
