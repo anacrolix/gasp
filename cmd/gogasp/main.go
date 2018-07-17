@@ -12,8 +12,9 @@ import (
 	"syscall"
 	"text/template"
 
-	"github.com/anacrolix/gasp"
 	"github.com/anacrolix/tagflag"
+
+	"github.com/anacrolix/gasp"
 )
 
 var args struct {

@@ -2,7 +2,6 @@ package gasp
 
 import (
 	"fmt"
-	"log"
 	"strings"
 )
 
@@ -124,9 +123,9 @@ func (l List) Eval(env *Env) Object {
 	first = Eval(first, env)
 	l = l.Rest()
 	if m, ok := first.(Macro); ok {
-		log.Println("macro", m.obj)
+		// log.Println("macro", m.obj)
 		mr := Call(m.obj, l)
-		log.Println("macro", m.obj, l, "->", mr)
+		// log.Println("macro", m.obj, l, "->", mr)
 		return Eval(mr, env)
 	}
 	var args List

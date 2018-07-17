@@ -1,7 +1,6 @@
 package gasp
 
 import (
-	"log"
 	"testing"
 
 	_ "github.com/anacrolix/envpprof"
@@ -60,7 +59,7 @@ func TestEval(t *testing.T) {
 		{`(-1 -2 -3)`, `(map - '(1 2 3) '(2 4 6))`},
 		{`((1 3) (2 4))`, `(zip '(1 2) '(3 4))`},
 	} {
-		log.Println("run", _case.Input)
+		// log.Println("run", _case.Input)
 		assert.EqualValues(t, _case.Input, EvalString(env, _case.Output).String())
 	}
 }
